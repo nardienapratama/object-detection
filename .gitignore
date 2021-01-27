@@ -4,3 +4,5 @@
 *.pb
 *.tar.gz
 *.ckpt.*
+opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/lisa/
+opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/synthetic_dataset/
