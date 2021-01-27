@@ -82,7 +82,7 @@ def main(_):
 
     # put all captures.json files in a list
     jsonFilesList = ["synthetic_dataset/" + f for f in os.listdir('synthetic_dataset') if f.endswith('.json')]
-    print(["synthetic_dataset/" + filename for filename in os.listdir('synthetic_dataset') if fnmatch.fnmatch(filename, '[captures]*.json')])
+    # print(["synthetic_dataset/" + filename for filename in os.listdir('synthetic_dataset') if fnmatch.fnmatch(filename, '[captures]*.json')])
 
     # create new merged_captures.json which has contents of all capture json files
     merge_JSONFiles(jsonFilesList)
@@ -152,7 +152,7 @@ def main(_):
 
             # parse the filename and encoding from the input path
             filename = k.split(os.path.sep)[-1]
-            print("Filename:", filename)
+            # print("Filename:", filename)
             encoding = filename[filename.rfind(".") + 1:]
 
             # initialize the annotation object used to store
@@ -168,7 +168,7 @@ def main(_):
             # the image
             
             for (label, (startX, startY, endX, endY)) in D[k]:
-                print("For k: ", k, " --", (label, (startX, startY, endX, endY)))
+                # print("For k: ", k, " --", (label, (startX, startY, endX, endY)))
                 # TensorFlow assumes all bounding boxes are in the
                 # range [0, 1] so we need to scale them
                 xMin = startX / w
@@ -188,11 +188,11 @@ def main(_):
                     cv2.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 2)
 
                     # show the output image
-                    print("Image:", filename)
+                    # print("Image:", filename)
                     cv2.imshow("Image", image)
                     cv2.waitKey(0)
                     
-                print("Iteration ", ITERATION)
+                # print("Iteration ", ITERATION)
 
                 # update the bounding boxes + labels lists
                 tfAnnot.xMins.append(xMin)
