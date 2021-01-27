@@ -1,5 +1,5 @@
 .vscode
-comp-vis.code-workspace
+*.code-workspace
 *.record
 *.pb
 *.tar.gz
