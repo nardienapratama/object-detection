@@ -3,3 +3,4 @@
 *.record
 *.pb
 *.tar.gz
+*.ckpt.*
