@@ -1,30 +1,12 @@
 # REFERENCE: ImageNetBundle Textbook (PyImageSearch)
 # import the necessary packages
-from config import synthetic_dataset_config as config
+from config import lisa_config as config
 from tfannotation import TFAnnotation
 from sklearn.model_selection import train_test_split
 from PIL import Image
 import tensorflow as tf
 import os
 import cv2
-import json
-import fnmatch
-
-# REFERENCE: https://stackoverflow.com/questions/52879192/merge-multiple-json-files-more-than-two/52879638
-def merge_JSONFiles(filenames):
-    print("MERGING JSON")
-    output_list = list()
-    new_merged_json = "synthetic_dataset/merged_captures.json"
-    for f1 in filenames:
-        with open(f1, 'rb') as infile:
-            output_list.append(json.load(infile))
-
-    all_items = []
-    for json_file in output_list:
-        all_items += json_file['captures']
-
-    with open('synthetic_dataset/merged_captures.json', 'w') as textfile_merged:
-        json.dump({"captures": all_items }, textfile_merged)
 
 def main(_):
     # open the classes output file
@@ -46,67 +28,19 @@ def main(_):
     # to all bounding boxes associated with the image, then load
     # the contents of the annotations file
     D = {}
-    # rows = open(config.ANNOT_PATH).read().strip().split("\n")
+    rows = open(config.ANNOT_PATH).read().strip().split("\n")
 
     # loop over the individual rows, skipping the header
-    # for row in rows[1:]:
-    #     # break the row into components
-    #     row = row.split(",")[0].split(";")
-    #     (imagePath, label, startX, startY, endX, endY, _) = row
-    #     (startX, startY) = (float(startX), float(startY))
-    #     (endX, endY) = (float(endX), float(endY))
+    for row in rows[1:]:
+        # break the row into components
+        row = row.split(",")[0].split(";")
+        (imagePath, label, startX, startY, endX, endY, _) = row
+        (startX, startY) = (float(startX), float(startY))
+        (endX, endY) = (float(endX), float(endY))
 
-    #     # if we are not interested in the label, ignore it
-    #     if label not in config.CLASSES:
-    #         continue
-
-    #     # build the path to the input image, then grab any other
-    #     # bounding boxes + labels associated with the image
-    #     # path, labels, and bounding box lists, respectively
-    #     p = os.path.sep.join([config.BASE_PATH, imagePath])
-    #     b = D.get(p, [])
-
-    #     # build a tuple consisting of the label and bounding box,
-    #     # then update the list and store it in the dictionary
-    #     b.append((label, (startX, startY, endX, endY)))
-    #     D[p] = b
-
-    ITERATION = 1
-
-    # TODO: MERGE ALL JSON FILES FIRST
-
-    merged_json_file_path = "synthetic_dataset/merged_captures.json"
-
-    if os.path.exists(merged_json_file_path):
-        os.remove(merged_json_file_path)
-
-    # put all captures.json files in a list
-    jsonFilesList = ["synthetic_dataset/" + f for f in os.listdir('synthetic_dataset') if f.endswith('.json')]
-    # print(["synthetic_dataset/" + filename for filename in os.listdir('synthetic_dataset') if fnmatch.fnmatch(filename, '[captures]*.json')])
-
-    # create new merged_captures.json which has contents of all capture json files
-    merge_JSONFiles(jsonFilesList)
-
-    
-
-    with open(merged_json_file_path, 'r') as j:
-        contents = json.loads(j.read())
-
-    for image in contents['captures']:
-        imagePath = "dataset/" + image['filename'].split('/')[-1] # just the rgb part of the filename
-        print("CHECK imagepath:", imagePath)
-        for annotation in image['annotations'][0]['values']:
-            label = annotation['label_name']
-            startX = annotation['x']
-            startY = annotation['y']
-            endX = annotation['x'] + annotation['width']
-            endY = annotation['y']+ annotation['height']
-            (startX, startY) = (float(startX), float(startY))
-            (endX, endY) = (float(endX), float(endY))
-
-            # if we are not interested in the label, ignore it
-            if label not in config.CLASSES:
-                continue
+        # if we are not interested in the label, ignore it
+        if label not in config.CLASSES:
+            continue
 
         # build the path to the input image, then grab any other
         # bounding boxes + labels associated with the image
@@ -119,7 +53,6 @@ def main(_):
         b.append((label, (startX, startY, endX, endY)))
         D[p] = b
 
-
     # create training and testing splits from our data dictionary
     (trainKeys, testKeys) = train_test_split(list(D.keys()),
         test_size=config.TEST_SIZE, random_state=42)
@@ -130,6 +63,7 @@ def main(_):
         ("test", testKeys, config.TEST_RECORD)
     ]
 
+    ITERATION = 1
     # loop over the datasets (training and testing splits)
     for (dType, keys, outputPath) in datasets:
         # initialize the TensorFlow writer and initialize the total
@@ -140,6 +74,7 @@ def main(_):
 
         # loop over all the keys in the current set
         for k in keys:
+            ITERATION += 1
             print("k:", k)
             # load the input image from disk as a TensorFlow object
             encoded = tf.io.gfile.GFile(k, "rb").read()
@@ -176,8 +111,8 @@ def main(_):
                 yMin = startY / h
                 yMax = endY / h
 
-                if ITERATION <=10:
-                    # load the input image from disk and denormalize the bounding box coordinates
+                # load the input image from disk and denormalize the bounding box coordinates
+                if ITERATION <= 10:
                     image = cv2.imread(k)
                     startX = int(xMin * w)
                     startY = int(yMin * h)
@@ -205,7 +140,7 @@ def main(_):
 
                 # increment the total number of examples
                 total += 1
-            ITERATION += 1
+            # ITERATION += 1
             # encode the data point attributes using the TensorFlow
             # helper functions
             features = tf.train.Features(feature=tfAnnot.build())
