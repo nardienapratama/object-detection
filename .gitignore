@@ -4,5 +4,8 @@
 *.pb
 *.tar.gz
 *.ckpt.*
-opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/lisa/
-opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/synthetic_dataset/
+checkpoint
+opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/lisa/[acdrtv]*
+opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/synthetic_dataset/dataset/
+opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/synthetic_dataset/records/
+opencv-ib-chap15/tensorflow/models/research/object_detection/ssds_and_rcnn/synthetic_dataset/merged_captures.json
