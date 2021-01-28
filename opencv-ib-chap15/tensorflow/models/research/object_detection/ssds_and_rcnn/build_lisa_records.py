@@ -75,7 +75,6 @@ def main(_):
         # loop over all the keys in the current set
         for k in keys:
             ITERATION += 1
-            print("k:", k)
             # load the input image from disk as a TensorFlow object
             encoded = tf.io.gfile.GFile(k, "rb").read()
             encoded = bytes(encoded)
