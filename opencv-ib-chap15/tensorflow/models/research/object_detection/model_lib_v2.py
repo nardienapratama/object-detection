@@ -488,6 +488,8 @@ def train_loop(
   if kwargs['use_bfloat16']:
     tf.compat.v2.keras.mixed_precision.experimental.set_policy('mixed_bfloat16')
 
+  print( type(train_pb2.TrainConfig) )
+  print(train_config)
   if train_config.load_all_detection_checkpoint_vars:
     raise ValueError('train_pb2.load_all_detection_checkpoint_vars '
                      'unsupported in TF2')
