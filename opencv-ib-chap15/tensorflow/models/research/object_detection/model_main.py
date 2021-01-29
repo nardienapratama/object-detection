@@ -23,6 +23,7 @@ from absl import flags
 import tensorflow.compat.v1 as tf
 
 from object_detection import model_lib
+tf.logging.set_verbosity(tf.logging.INFO)
 
 flags.DEFINE_string(
     'model_dir', None, 'Path to output model directory '
